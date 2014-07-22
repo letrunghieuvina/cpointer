@@ -61,23 +61,27 @@ int main() {
 	LinkedList linkedList;
 	initLinkedList(&linkedList);
 	
-	Employee peter;
-	initEmployee(&peter, "Peter", 20);
+	Employee* peter = NULL;
+	peter = initEmployee(peter, "Peter", 20);
+	displayEmployee(peter);
 	
-	Employee mary;
-	initEmployee(&mary, "Mary", 19);
-
-	Employee david;
-	initEmployee(&david, "David", 30);
+	Employee* mary = NULL;
+	mary = initEmployee(mary, "Mary", 19);
+	displayEmployee(mary);
+	
+	Employee* david;
+	david = initEmployee(david, "David", 30);
+	displayEmployee(david);
 
 	addHead(&linkedList, &peter);
 	addTail(&linkedList, &mary);
 	//addTail(&linkedList, &david);
-	displayLinkedList(&linkedList, displayEmployee);
 	
+	//displayLinkedList(&linkedList, displayEmployee);
+	printf("it is %s", ((Employee*)(linkedList.head->data))->name);
 	addTail(&linkedList, &david);
-	displayLinkedList(&linkedList, displayEmployee);
-
+	//displayLinkedList(&linkedList, displayEmployee);
+	
 	destroyEmployee(&peter);
 	destroyEmployee(&mary);
 	destroyEmployee(&david);
@@ -85,6 +89,25 @@ int main() {
 	return 0;
 }
 
+Employee* initEmployee(Employee* employee, char* name, int age) {
+	employee = (Employee*) malloc(sizeof(Employee));
+	employee->age = age;
+	employee->name = (char*) malloc(NAME_LENGTH + 1);
+	strcpy(employee->name, name);
+	
+	return employee;
+}
+
+Student* initStudent(Student* student, char* name, int age, char* class) {
+	student = (Student*) malloc(sizeof(Student));
+	student->name = (char*) malloc(NAME_LENGTH + 1);
+	student->class = (char*) malloc(NAME_LENGTH + 1);
+	strcpy(student->name, name);
+	strcpy(student->class, class);
+	student->age = age;
+
+	return student;
+}
 
 // This initializes a LinkedList, set all fields to NULL
 void initLinkedList(LinkedList* list){
@@ -156,7 +179,7 @@ void displayLinkedList(LinkedList* list, DISPLAY display) {
 	while(current != NULL) {
 		display(current->data);
 		current = current->next;
-	} 	
+	} 
 }
 
 void displayEmployee(Employee* employee){
@@ -171,25 +194,7 @@ void displayStudent(Student* student) {
 	}
 }
 
-Employee* initEmployee(Employee* employee, char* name, int age) {
-	employee = (Employee*) malloc(sizeof(Employee));
-	employee->age = age;
-	employee->name = (char*) malloc(NAME_LENGTH + 1);
-	strcpy(employee->name, name);
-	
-	return employee;
-}
 
-Student* initStudent(Student* student, char* name, int age, char* class) {
-	student = (Student*) malloc(sizeof(Student));
-	student->name = (char*) malloc(NAME_LENGTH + 1);
-	student->class = (char*) malloc(NAME_LENGTH + 1);
-	strcpy(student->name, name);
-	strcpy(student->class, class);
-	student->age = age;
-
-	return student;
-}
 
 void destroyEmployee(Employee* employee) {
 	if(employee->name != NULL) {
