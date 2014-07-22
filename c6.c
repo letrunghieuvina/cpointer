@@ -26,10 +26,15 @@ typedef struct _linkedList {
 } LinkedList;
 
 typedef void (*DISPLAY)(void* data);
+typedef int (*COMPARE)();
 
 Employee* initEmployee(Employee* employee, char* name, int age);
 
+void destroyEmployee(Employee* employee);
+
 Student* initStudent(Student* student, char* name, int age, char* class);
+
+void destroyStudent(Student* student);
 
 // This initializes a LinkedList, set all fields to NULL
 void initLinkedList(LinkedList* list);
@@ -53,7 +58,31 @@ void displayEmployee(Employee* employee);
 void displayStudent(Student* student);
 
 int main() {
+	LinkedList linkedList;
+	initLinkedList(&linkedList);
 	
+	Employee peter;
+	initEmployee(&peter, "Peter", 20);
+	
+	Employee mary;
+	initEmployee(&mary, "Mary", 19);
+
+	Employee david;
+	initEmployee(&david, "David", 30);
+
+	addHead(&linkedList, &peter);
+	addTail(&linkedList, &mary);
+	//addTail(&linkedList, &david);
+	displayLinkedList(&linkedList, displayEmployee);
+	
+	addTail(&linkedList, &david);
+	displayLinkedList(&linkedList, displayEmployee);
+
+	destroyEmployee(&peter);
+	destroyEmployee(&mary);
+	destroyEmployee(&david);
+	
+	return 0;
 }
 
 
@@ -138,7 +167,7 @@ void displayEmployee(Employee* employee){
 
 void displayStudent(Student* student) {
 	if(student != NULL) {
-		printf("Student: name = %s, age = %i, class = %s\n", student->name, student->age, student.class);
+		printf("Student: name = %s, age = %i, class = %s\n", student->name, student->age, student->class);
 	}
 }
 
@@ -162,3 +191,20 @@ Student* initStudent(Student* student, char* name, int age, char* class) {
 	return student;
 }
 
+void destroyEmployee(Employee* employee) {
+	if(employee->name != NULL) {
+		free(employee->name);
+	}
+	free(employee);
+}
+
+void destroyStudent(Student* student) {
+	if(student->name != NULL) {
+		free(student->name);
+	}
+
+	if(student->class != NULL) {
+		free(student->class);
+	}
+	free(student);
+}
