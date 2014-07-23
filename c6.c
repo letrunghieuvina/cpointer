@@ -25,6 +25,9 @@ typedef struct _linkedList {
 	Node* current;
 } LinkedList;
 
+typedef LinkedList Queue;
+typedef LinkedList Stack;
+
 typedef void (*DISPLAY)(void* data);
 typedef int (*COMPARE)();
 
@@ -51,6 +54,21 @@ void delete(LinkedList* list, Node* node);
 // get a node in the list
 Node* getNode(LinkedList* list, COMPARE compare, void* data);
 
+/**---------- functions to manipulate Queue ----------**/
+void initQueue(Queue* queue);
+
+void enqueue(Queue* queue, void* data);
+
+void* dequeue(Queue* queue);
+
+/**---------- functions to manipulate Stack ----------**/
+void initStack(Stack* stack);
+
+void push(Stack* stack, void* data);
+
+void* pop(Stack* stack);
+
+/**---------------- functions for displaying object info ------------------**/
 void displayLinkedList(LinkedList* list, DISPLAY display);
 
 void displayEmployee(Employee* employee);
@@ -58,33 +76,59 @@ void displayEmployee(Employee* employee);
 void displayStudent(Student* student);
 
 int main() {
-	LinkedList linkedList;
-	initLinkedList(&linkedList);
 	
 	Employee* peter = NULL;
 	peter = initEmployee(peter, "Peter", 20);
-	displayEmployee(peter);
+	//displayEmployee(peter);
 	
 	Employee* mary = NULL;
 	mary = initEmployee(mary, "Mary", 19);
-	displayEmployee(mary);
+	//displayEmployee(mary);
 	
 	Employee* david;
 	david = initEmployee(david, "David", 30);
-	displayEmployee(david);
-
-	addHead(&linkedList, &peter);
-	addTail(&linkedList, &mary);
+	//displayEmployee(david);
+	
+	/*
+	//demo linked list
+	LinkedList linkedList;
+	initLinkedList(&linkedList);
+	addHead(&linkedList, peter);
+	addTail(&linkedList, mary);
 	//addTail(&linkedList, &david);
 	
-	//displayLinkedList(&linkedList, displayEmployee);
-	printf("it is %s", ((Employee*)(linkedList.head->data))->name);
-	addTail(&linkedList, &david);
-	//displayLinkedList(&linkedList, displayEmployee);
+	displayLinkedList(&linkedList, displayEmployee);
+	//printf("it is %s", ((Employee*)(linkedList.head->data))->name);
+	addTail(&linkedList, david);
+	displayLinkedList(&linkedList, displayEmployee);
+	*/
 	
-	destroyEmployee(&peter);
-	destroyEmployee(&mary);
-	destroyEmployee(&david);
+	/*
+	//demo Queue
+	Queue queue;
+	initQueue(&queue);
+	enqueue(&queue, peter);
+	enqueue(&queue, mary);		
+	enqueue(&queue, david);
+	displayEmployee((Employee*)dequeue(&queue));
+	displayEmployee(dequeue(&queue));
+	displayEmployee(dequeue(&queue));	
+	*/
+
+	//demo Stack
+	Stack stack;
+	initStack(&stack);
+	push(&stack, peter);
+	push(&stack, mary);
+	push(&stack, david);
+	displayEmployee(pop(&stack));
+	displayEmployee(pop(&stack));	
+	displayEmployee(pop(&stack));
+	
+	//destroy employees	
+	destroyEmployee(peter);
+	destroyEmployee(mary);
+	destroyEmployee(david);
 	
 	return 0;
 }
@@ -212,4 +256,70 @@ void destroyStudent(Student* student) {
 		free(student->class);
 	}
 	free(student);
+}
+
+void initQueue(Queue* queue){
+	queue->head = NULL;
+	queue->tail = NULL;
+	queue->current = NULL;
+}
+
+void enqueue(Queue* queue, void* data){
+	addHead(queue, data);
+}
+
+void* dequeue(Queue* queue) {
+	Node* tmp = NULL;
+	void* data = NULL;
+	if(queue->head == NULL){
+		//case the queue is empty
+		data = NULL;
+	} else if(queue->head == queue->tail) {
+		//case the queue has only one item
+		tmp = queue->head;
+		queue->head = queue->tail = NULL;
+		data = tmp->data;
+		free(tmp);
+	} else {
+		tmp = queue->head;
+		while(tmp->next != queue->tail){
+			tmp = tmp->next;
+		}
+		queue->tail = tmp;
+		tmp = tmp->next;
+		queue->tail->next = NULL;
+		data = tmp->data;
+		free(tmp);
+	}
+	return data;
+}
+
+void initStack(Stack* stack) {
+	stack->head = stack->tail = stack->current = NULL;
+}
+
+void push(Stack* stack, void* data) {
+	addHead(stack, data);
+}
+
+void* pop(Stack* stack) {
+	Node* tmp = NULL;
+	void* data = NULL;
+	
+	if(stack->head == NULL) {
+	//case the stack is empty
+		return NULL;	
+	} else if(stack->head == stack->tail){
+		tmp = stack->head;
+		stack->head = stack->tail = NULL;
+		data = tmp->data;
+		free(tmp);
+		
+	} else {
+		tmp = stack->head;
+		stack->head = stack->head->next;
+		data = tmp->data;
+		free(tmp);	
+	}
+	return data;
 }
